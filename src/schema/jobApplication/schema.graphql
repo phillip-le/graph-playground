@@ -1,0 +1,10 @@
+extend type Query {
+  jobApplication: JobApplication
+  jobApplications: [JobApplication!]!
+}
+type JobApplication {
+  id: String!
+  job: Job!
+  status: String!
+  appliedAt: String!
+}

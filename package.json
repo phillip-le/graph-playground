@@ -11,9 +11,14 @@
     "dev": "run-p -l start:*"
   },
   "dependencies": {
+    "@aws-lambda-powertools/parameters": "1.14.0",
+    "@aws-sdk/client-secrets-manager": "3.425.0",
+    "dataloader": "2.2.2",
+    "gaxios": "6.1.1",
     "graphql": "16.6.0",
     "graphql-scalars": "1.22.0",
-    "graphql-yoga": "3.9.1"
+    "graphql-yoga": "3.9.1",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@eddeee888/gcg-typescript-resolver-files": "0.6.0",

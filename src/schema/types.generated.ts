@@ -4,6 +4,8 @@ import {
   GraphQLScalarTypeConfig,
 } from "graphql";
 import { BookMapper } from "./book/schema.mappers";
+import { JobMapper } from "./job/schema.mappers";
+import { JobApplicationMapper } from "./jobApplication/schema.mappers";
 import { UserMapper } from "./user/schema.mappers";
 import { WizardMapper } from "./character/schema.mappers";
 import { ResolverContext } from "../index";
@@ -84,6 +86,22 @@ export type Fighter = CharacterNode &
     screenName: Scalars["String"]["output"];
   };
 
+export type Job = {
+  __typename?: "Job";
+  id: Scalars["ID"]["output"];
+  isQuickApply: Scalars["Boolean"]["output"];
+  location: Scalars["String"]["output"];
+  title: Scalars["String"]["output"];
+};
+
+export type JobApplication = {
+  __typename?: "JobApplication";
+  appliedAt: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  job: Job;
+  status: Scalars["String"]["output"];
+};
+
 export type Magazine = {
   __typename?: "Magazine";
   id: Scalars["ID"]["output"];
@@ -109,6 +127,9 @@ export type Query = {
   __typename?: "Query";
   book: BookPayload;
   character?: Maybe<CharacterNode>;
+  job: Job;
+  jobApplication?: Maybe<JobApplication>;
+  jobApplications: Array<JobApplication>;
   readable?: Maybe<Readable>;
   user?: Maybe<User>;
 };
@@ -119,6 +140,10 @@ export type QueryBookArgs = {
 
 export type QueryCharacterArgs = {
   id: Scalars["ID"]["input"];
+};
+
+export type QueryJobArgs = {
+  jobId: Scalars["ID"]["input"];
 };
 
 export type QueryReadableArgs = {
@@ -321,6 +346,9 @@ export type ResolversTypes = {
     }
   >;
   Int: ResolverTypeWrapper<Scalars["Int"]["output"]>;
+  Job: ResolverTypeWrapper<JobMapper>;
+  Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
+  JobApplication: ResolverTypeWrapper<JobApplicationMapper>;
   Magazine: ResolverTypeWrapper<Magazine>;
   MainCharacter: ResolverTypeWrapper<
     ResolversInterfaceTypes<ResolversTypes>["MainCharacter"]
@@ -334,7 +362,6 @@ export type ResolversTypes = {
   ShortNovel: ResolverTypeWrapper<ShortNovel>;
   User: ResolverTypeWrapper<UserMapper>;
   Wizard: ResolverTypeWrapper<WizardMapper>;
-  Boolean: ResolverTypeWrapper<Scalars["Boolean"]["output"]>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -357,6 +384,9 @@ export type ResolversParentTypes = {
     lastAppearsIn?: Maybe<ResolversParentTypes["Readable"]>;
   };
   Int: Scalars["Int"]["output"];
+  Job: JobMapper;
+  Boolean: Scalars["Boolean"]["output"];
+  JobApplication: JobApplicationMapper;
   Magazine: Magazine;
   MainCharacter: ResolversInterfaceTypes<ResolversParentTypes>["MainCharacter"];
   PayloadError: PayloadError;
@@ -365,7 +395,6 @@ export type ResolversParentTypes = {
   ShortNovel: ShortNovel;
   User: UserMapper;
   Wizard: WizardMapper;
-  Boolean: Scalars["Boolean"]["output"];
 };
 
 export type BookResolvers<
@@ -492,6 +521,28 @@ export type FighterResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type JobResolvers<
+  ContextType = ResolverContext,
+  ParentType extends ResolversParentTypes["Job"] = ResolversParentTypes["Job"]
+> = {
+  id?: Resolver<ResolversTypes["ID"], ParentType, ContextType>;
+  isQuickApply?: Resolver<ResolversTypes["Boolean"], ParentType, ContextType>;
+  location?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type JobApplicationResolvers<
+  ContextType = ResolverContext,
+  ParentType extends ResolversParentTypes["JobApplication"] = ResolversParentTypes["JobApplication"]
+> = {
+  appliedAt?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  job?: Resolver<ResolversTypes["Job"], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes["String"], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MagazineResolvers<
   ContextType = ResolverContext,
   ParentType extends ResolversParentTypes["Magazine"] = ResolversParentTypes["Magazine"]
@@ -532,6 +583,22 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryCharacterArgs, "id">
+  >;
+  job?: Resolver<
+    ResolversTypes["Job"],
+    ParentType,
+    ContextType,
+    RequireFields<QueryJobArgs, "jobId">
+  >;
+  jobApplication?: Resolver<
+    Maybe<ResolversTypes["JobApplication"]>,
+    ParentType,
+    ContextType
+  >;
+  jobApplications?: Resolver<
+    Array<ResolversTypes["JobApplication"]>,
+    ParentType,
+    ContextType
   >;
   readable?: Resolver<
     Maybe<ResolversTypes["Readable"]>,
@@ -615,6 +682,8 @@ export type Resolvers<ContextType = ResolverContext> = {
   DateTime?: GraphQLScalarType;
   ExtraCharacter?: ExtraCharacterResolvers<ContextType>;
   Fighter?: FighterResolvers<ContextType>;
+  Job?: JobResolvers<ContextType>;
+  JobApplication?: JobApplicationResolvers<ContextType>;
   Magazine?: MagazineResolvers<ContextType>;
   MainCharacter?: MainCharacterResolvers<ContextType>;
   PayloadError?: PayloadErrorResolvers<ContextType>;
